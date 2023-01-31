@@ -1,0 +1,266 @@
+- frame_id: 0x010
+  name: bms_measurement
+  length: 8
+  signals:
+    - name: battery_voltage
+      start: 0
+      length: 16
+      is_signed: false
+      scale: 0.01
+      unit: V
+    - name: aux_voltage
+      start: 16
+      length: 16
+      is_signed: false
+      scale: 0.001
+      unit: V
+    - name: current
+      start: 32
+      length: 32
+      scale: 1.0
+      unit: A
+      is_float: true
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x011
+  name: battery_status
+  length: 4
+  signals:
+    - name: battery_state
+      start: 0
+      length: 8
+      choices:
+        0: STARTUP
+        1: PRECHARGE
+        2: DISCHARGING
+        3: LV_ONLY
+        4: CHARGING
+        5: WALL_CHARGING
+        6: KILLED
+    - name: contactor_state
+      start: 8
+      length: 8
+      choices:
+        0: BATTERY_HIGH_CONTRACTOR
+        1: BATTERY_LOW_CONTACTOR
+        2: BATTERY_VICOR_CONTACTOR
+        3: BATTERY_PRE_CONTACTOR
+        4: BATTERY_HIGH2_CONTACTOR
+        5: BATTERY_LOW2_CONTACTOR
+        6: CHARGER_HIGH_CONTACTOR
+        7: CHARGER_PRE_CONTACTOR
+    - name: lv_channel_status
+      start: 16
+      length: 8
+      choices:
+        0: aux_fault
+        1: main_fault
+        2: aux_power_valid
+        3: main_power_valid
+        4: aux_power_active
+        5: main_power_active
+    - name: lv_control_status
+      start: 24
+      length: 8
+      choices:
+        0: aux_vicor_enable
+        1: bat_vicor_enable
+        2: aux_relay_held
+        3: aux_ref_enable
+        4: aux_charging_enable
+        5: kill_hv
+        6: kill_lv
+        7: start_button
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x012
+  name: bms_kill_reason
+  length: 8
+  signals:
+    - name: reason1
+      start: 0
+      length: 8
+      choices:
+        0: NONE
+        1: OvERVOLT
+        2: UNDERVOLT
+        3: OVERTEMP
+        4: TEMP_DISCONNECT
+        5: COMM_FAIL
+    - name: reason2
+      start: 8
+      length: 8
+      choices:
+        0: NONE
+        1: HARDWARE
+        2: KILL_PACKET
+        3: UNKNOWN
+        4: OVERCURRENT
+        5: PRECHARGE_FAIL
+        6: AUX_OVER_UNDER
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x013
+  name: bms_module_min_max
+  length: 8
+  signals:
+    - name: module_max_temp
+      start: 0
+      length: 16
+      is_signed: true
+      scale: 0.01
+      unit: C
+      receivers:
+        - car_control
+        - charger
+    - name: module_min_temp
+      start: 16
+      length: 16
+      is_signed: true
+      scale: 0.01
+      unit: C
+      receivers:
+        - car_control
+        - charger
+    - name: module_max_voltage
+      start: 32
+      length: 16
+      is_signed: false
+      scale: 0.001
+      unit: V
+      receivers:
+        - car_control
+        - charger
+    - name: module_min_voltage
+      start: 48
+      length: 16
+      is_signed: false
+      scale: 0.001
+      unit: V
+      receivers:
+        - car_control
+        - charger
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x014
+  name: bms_soc
+  length: 4
+  signals:
+    - name: soc
+      start: 0
+      length: 32
+      is_float: true
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x015
+  name: bms_capacity
+  length: 8
+  signals:
+    - name: ah
+      start: 0
+      length: 32
+      unit: Ah
+      is_float: true
+    - name: wh
+      start: 32
+      length: 32
+      unit: Wh
+      is_float: true
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x018
+  name: bms_currentlimit
+  length: 4
+  signals:
+    - name: current_max
+      start: 0
+      length: 16
+      is_signed: false
+      scale: 0.01
+      unit: A
+    - name: current_min
+      start: 16
+      length: 16
+      is_signed: false
+      scale: 0.01
+      unit: A
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x019
+  name: bms_fan_info
+  length: 8
+  signals:
+    - name: fan1
+      start: 0
+      length: 16
+      is_signed: false
+      unit: RPM
+    - name: fan2
+      start: 16
+      length: 16
+      is_signed: false
+      unit: RPM
+    - name: fan3
+      start: 32
+      length: 16
+      is_signed: false
+      unit: RPM
+    - name: fan4
+      start: 48
+      length: 16
+      is_signed: false
+      unit: RPM
+
+- frame_id: 0x01B
+  name: bms_set_min_fan_speed
+  length: 8
+  signals:
+    - name: voltage
+      start: 0
+      length: 32
+      unit: V
+      is_float: true
+    - name: temperature
+      start: 32
+      length: 32
+      unit: C
+      is_float: true
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
+
+- frame_id: 0x075
+  name: bms_charger_response
+  length: 1
+  signals:
+    - name: charging_ready
+      start: 0
+      length: 1
+      receivers:
+        - charger
+  senders:
+    - bms
+  cycle_time: 500
+  bus_name: main
