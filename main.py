@@ -14,8 +14,8 @@ db = cantools.db.Database()
 
 with open(in_fname, encoding='utf-8') as f:
     # Load the list of message defs from the yaml file.
-    li: List[Dict] = yaml.safe_load(f)
-    for msg_def in li:
+    data = yaml.safe_load(f)
+    for msg_def in data['messages']:
         # Create Signal objects from dictionary definition.
         msg_def['signals'] = [cantools.db.Signal(
             **sig,) for sig in msg_def['signals']]
@@ -24,6 +24,8 @@ with open(in_fname, encoding='utf-8') as f:
 
 # Build the list of CAN nodes.
 for msg in db.messages:
+    # if msg.comment:
+    #     print(msg.comment)
     if msg.senders:
         for sender in msg.senders:
             try:
