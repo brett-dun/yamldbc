@@ -1,2 +1,2 @@
-cantools
+cantools==38 # Changes to the cantools API in 39.0.0 breaks this tool.
 pyyaml
